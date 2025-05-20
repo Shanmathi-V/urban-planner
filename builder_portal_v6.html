@@ -6,6 +6,8 @@
     <title>Builder Portal</title>
     <link rel="stylesheet" href="style.css">
     <!-- Import the <model-viewer> component -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 
     <style>
@@ -265,6 +267,44 @@ document.addEventListener("keydown", (event) => {
             // arButton.style.display = "none"; // Hide button if AR is not available
         }
     });
+
+    //supabase
+    // 1. Initialize Supabase client
+const supabaseUrl = 'https://cpmooylqgmiorjikndjj.supabase.co'; // Replace with your project URL
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbW9veWxxZ21pb3JqaWtuZGpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc3NDI0MjUsImV4cCI6MjA2MzMxODQyNX0.7bnLgfpK3z0lbKH7sljtjcXm4bUwVg3wiT6WYEjHXqk'; // Replace with your anon public key
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// 2. Upload function
+modelUpload.addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Preview locally
+    const fileURL = URL.createObjectURL(file);
+    modelViewer.src = fileURL;
+
+    // Upload to Supabase
+    const fileName = `${Date.now()}_${file.name}`;
+    const { data, error } = await supabase
+        .storage
+        .from('models') // Bucket name
+        .upload(fileName, file, {
+            cacheControl: '3600',
+            upsert: false,
+        });
+
+    if (error) {
+        alert('Upload failed: ' + error.message);
+        return;
+    }
+
+    alert('Model uploaded successfully!');
+
+    // Optionally: get public URL
+    const { data: publicUrlData } = supabase.storage.from('models').getPublicUrl(fileName);
+    console.log('Public model URL:', publicUrlData.publicUrl);
+});
+
 
 
     </script>
