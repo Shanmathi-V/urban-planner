@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builder Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Import the <model-viewer> component -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            padding-top: 100px; 
+            /* Fullscreen Background Image Settings */
+            background-image: url("eren-namli-oNVhdUbY5N8-unsplash.jpg");
+            background-size: cover; /* Makes the image cover the entire screen */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents tiling */
+            background-attachment: fixed; /* Keeps the image fixed during scrolling */
+
+            /* Optional styling for content readability */
+            color: #413f3f;
+            background-color: #f0f4f8; /* Fallback background color */
+                }
+
+        
+        
+        h1 {
+            color: #e9f4f7;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        p.subtitle {
+            color: #e9f4f7;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        /* Upload Container Styling */
+        #upload-container {
+        margin: 20px auto;
+        padding: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.6); /* Semi-transparent border */
+        background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent background */
+        width: 90%;
+        max-width: 600px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+
+        label {
+            font-size: 1.1rem;
+            color: #444;
+        }
+        input[type="file"] {
+            margin-top: 10px;
+            padding: 8px 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fafafa;
+            cursor: pointer;
+        }
+
+        /* Model Viewer Styling */
+      /* Model Viewer Styling */
+model-viewer {
+    width: 100%;
+    height: 90vh;
+    margin: 0 auto;
+    background-color: transparent; /* Remove background color */
+    border: none; /* Remove border */
+    box-shadow: none; /* Remove shadow */
+}
+
+
+        /* Footer Styling */
+        footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <header >
+        <div>
+            <nav class="navbar">
+                <span class="hamburger-btn material-symbols-rounded">menu</span>
+                <a href="#" class="logo">
+                    <img src="URBAN-2.png" alt="logo">
+                    <h2 style="color:rgb(234, 134, 234);">URBAN PLANNER</h2>
+                </a>
+                <ul class="links ">
+                    <span class="close-btn material-symbols-rounded">close</span>
+                    <li ><a href="index.html" style="color: rgb(179, 221, 234);">Home</a></li>
+                    <li><a href="#" style="color: rgb(179, 221, 234);">Explore</a></li>
+                    <li><a href="builder_portal_v3.html" style="color: rgb(179, 221, 234);">Builder Portal</a></li>
+                </ul>
+                <button class="login-btn">LOG IN</button>
+            </nav>
+        </div>
+        
+    </header>
+
+    <h1>Builder Portal</h1>
+    <p class="subtitle">Upload and preview your 3D models seamlessly.</p>
+
+    <div id="upload-container">
+        <label for="modelUpload">Upload your 3D Model (GLTF/GLB):</label><br>
+        <input type="file" id="modelUpload" accept=".glb,.gltf,.obj">
+    </div>
+
+    <!-- The 3D model viewer -->
+    <model-viewer id="modelViewer" ar camera-controls touch-action="pan-y" shadow-intensity="2"
+        min-camera-orbit="auto 90deg 4m"
+        max-camera-orbit="auto auto infinity"
+        field-of-view="45deg"
+        max-field-of-view="80deg"
+        auto-rotate="false" 
+    camera-orbit="90deg 75deg 3m">
+        <p>3D model preview</p>
+    </model-viewer>
+
+    <footer>
+        <p>&copy; 2024 Urban Planner. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const modelUpload = document.getElementById('modelUpload');
+        const modelViewer = document.getElementById('modelViewer');
+
+        modelUpload.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const fileURL = URL.createObjectURL(file); // Create a local URL for the file
+                modelViewer.src = fileURL; // Set the 3D model's source
+            } else {
+                alert("Please upload a valid 3D model file (GLB, GLTF).");
+            }
+        });
+
+        //move using keys
+//         document.addEventListener("keydown", (event) => {
+//     const modelViewer = document.getElementById("modelViewer");
+    
+//     // Get the current camera orbit
+//     let orbit = modelViewer.getAttribute("camera-orbit").split(" ");
+//     let azimuth = parseFloat(orbit[0]); // Horizontal rotation
+//     let elevation = parseFloat(orbit[1]); // Vertical rotation
+//     let distance = parseFloat(orbit[2]); // Distance from model
+
+//     const step = 5; // Angle step size for movement
+
+//     switch (event.key) {
+//         case "ArrowLeft":
+//             azimuth -= step; // Rotate left
+//             break;
+//         case "ArrowRight":
+//             azimuth += step; // Rotate right
+//             break;
+//         case "ArrowUp":
+//             elevation += step; // Move up
+//             break;
+//         case "ArrowDown":
+//             elevation -= step; // Move down
+//             break;
+//     }
+
+//     // Apply new camera orbit
+//     modelViewer.setAttribute("camera-orbit", `${azimuth}deg ${elevation}deg ${distance}`);
+// });
+
+document.addEventListener("keydown", (event) => {
+    const modelViewer = document.getElementById("modelViewer");
+
+    // Get current camera orbit and target position
+    let orbit = modelViewer.getAttribute("camera-orbit").split(" ");
+    let azimuth = parseFloat(orbit[0]); // Horizontal rotation
+    let elevation = parseFloat(orbit[1]); // Vertical rotation
+    let distance = parseFloat(orbit[2]); // Distance from model
+
+    let target = modelViewer.getAttribute("camera-target").split(" ").map(parseFloat);
+    let targetX = target[0] || 0;
+    let targetY = target[1] || 0;
+    let targetZ = target[2] || 0;
+
+    const stepAngle = 5; // Degrees for rotation
+    const stepMove = 0.2; // Movement step for lateral translation
+
+    if (event.shiftKey) {
+        // Shift + Arrow Keys → Move the model (Pan)
+        switch (event.key) {
+            case "ArrowLeft":
+                targetX -= stepMove; // Move left
+                break;
+            case "ArrowRight":
+                targetX += stepMove; // Move right
+                break;
+            case "ArrowUp":
+                targetY += stepMove; // Move up
+                break;
+            case "ArrowDown":
+                targetY -= stepMove; // Move down
+                break;
+        }
+        modelViewer.setAttribute("camera-target", `${targetX}m ${targetY}m ${targetZ}m`);
+    } else {
+        // Arrow Keys → Rotate the model
+        switch (event.key) {
+            case "ArrowLeft":
+                azimuth -= stepAngle; // Rotate left
+                break;
+            case "ArrowRight":
+                azimuth += stepAngle; // Rotate right
+                break;
+            case "ArrowUp":
+                elevation += stepAngle; // Tilt up
+                break;
+            case "ArrowDown":
+                elevation -= stepAngle; // Tilt down
+                break;
+        }
+        modelViewer.setAttribute("camera-orbit", `${azimuth}deg ${elevation}deg ${distance}`);
+    }
+});
+
+
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Viewer</title>
+    
+    <!-- Import the <model-viewer> component -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        #upload-container {
+            margin-top: 20px;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        model-viewer {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            border: 1px solid #ddd;
+            background: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>3D Model Viewer</h1>
+    <div id="upload-container">
+        <label for="modelUpload">Upload your 3D Model (GLTF/GLB):</label>
+        <input type="file" id="modelUpload" accept=".glb,.gltf,.obj">
+    </div>
+
+    <!-- The 3D model viewer -->
+    <model-viewer id="modelViewer" ar camera-controls touch-action="pan-y" shadow-intensity="1"  min-camera-orbit="auto 90deg 0%"
+    max-camera-orbit="auto auto infinity"
+    field-of-view="45deg">
+        <p>3D model preview</p>
+    </model-viewer>
+
+    <script>
+        const modelUpload = document.getElementById('modelUpload');
+        const modelViewer = document.getElementById('modelViewer');
+
+        modelUpload.addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const fileURL = URL.createObjectURL(file); // Create a local URL for the file
+                modelViewer.src = fileURL; // Set the 3D model's source
+            } else {
+                alert("Please upload a valid 3D model file (GLB, GLTF).");
+            }
+        });
+    </script>
+
+</body>
+</html>
