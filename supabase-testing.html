@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upload .glb to Supabase</title>
+</head>
+<body>
+  <h2>Upload .glb file to Supabase</h2>
+
+  <input type="file" id="fileInput" accept=".glb" />
+  <button id="uploadBtn">Upload</button>
+
+  <script type="module">
+    // Load Supabase module from CDN
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    // Replace these with your actual values
+    const SUPABASE_URL = 'https://cpmooylqgmiorjikndjj.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbW9veWxxZ21pb3JqaWtuZGpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc3NDI0MjUsImV4cCI6MjA2MzMxODQyNX0.7bnLgfpK3z0lbKH7sljtjcXm4bUwVg3wiT6WYEjHXqk';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Upload file on button click
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert('Please select a .glb file first');
+        return;
+      }
+
+      // Optional: Check file extension
+      if (!file.name.endsWith('.glb')) {
+        alert('Only .glb files are allowed');
+        return;
+      }
+
+      const { data, error } = await supabase.storage
+        .from('models')  // your bucket name here
+        .upload(`uploads/${file.name}`, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (error) {
+        console.error('Upload error:', error.message);
+        alert('Upload failed!');
+      } else {
+        console.log('Upload successful:', data);
+        alert('File uploaded successfully!');
+      }
+    });
+  </script>
+</body>
+</html>

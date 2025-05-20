@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Builder Portal</title>
+   <link rel="stylesheet" href="style.css">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding-top: 100px;
+      background-image: url("eren-namli-oNVhdUbY5N8-unsplash.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: #413f3f;
+      background-color: #f0f4f8;
+    }
+
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(0,0,0,0.5);
+      padding: 1rem 2rem;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5rem;
+      text-align: left;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+
+    h1 {
+      color: #e9f4f7;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+    }
+
+    p.subtitle {
+      color: #e9f4f7;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+
+    #upload-container {
+      margin: 20px auto 40px auto;
+      padding: 20px;
+      background: rgba(255 255 255 / 0.85);
+      max-width: 600px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+      border: 1px solid rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    label {
+      font-size: 1.2rem;
+      color: #444;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input[type="file"] {
+      font-size: 1rem;
+      padding: 8px 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 100%;
+      cursor: pointer;
+      margin-bottom: 12px;
+      background-color: #fafafa;
+    }
+
+    button#uploadBtn {
+      display: inline-block;
+      padding: 12px 25px;
+      background-color: #7b6ffb;
+      color: white;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+    button#uploadBtn:disabled {
+      background-color: #a59ef8;
+      cursor: not-allowed;
+    }
+
+    #fileList {
+      margin-top: 40px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      background: rgba(255 255 255 / 0.85);
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    #fileList h2 {
+      margin-top: 0;
+      color: #333;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    #filesContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #filesContainer button {
+      background: #7b6ffb;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      padding: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #filesContainer button:hover {
+      background-color: #5a50d1;
+    }
+
+    model-viewer {
+      width: 100%;
+    height: 90vh;
+    margin: 0 auto;
+      margin: 0;
+      display: block;
+      border-radius: 0;
+      box-shadow: none;
+      background-color: transparent;
+      border: none;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #777;
+      text-align: center;
+      padding-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>    
+        <div>
+            <nav class="navbar">
+                <span class="hamburger-btn material-symbols-rounded">menu</span>
+                <a href="#" class="logo">
+                    <img src="URBAN-2.png" alt="logo">
+                    <h2 style="color:rgb(234, 134, 234);">URBAN PLANNER</h2>
+                </a>
+                <ul class="links ">
+                    <span class="close-btn material-symbols-rounded">close</span>
+                    <li ><a href="index.html" style="color: rgb(179, 221, 234);">Home</a></li>
+                    <li><a href="#" style="color: rgb(179, 221, 234);">Explore</a></li>
+                    <li><a href="builder_portal_v7.html" style="color: rgb(179, 221, 234);">Builder Portal</a></li>
+                </ul>
+                <button class="login-btn">LOG IN</button>
+            </nav>
+        </div>
+    </header>
+
+  <main>
+    <h1>Builder Portal</h1>
+    <p class="subtitle">Upload and preview your 3D models seamlessly.</p>
+
+    <div id="upload-container">
+      <label for="fileInput">Upload your 3D Model (GLTF/GLB):</label>
+      <input type="file" id="fileInput" accept=".glb,.gltf" />
+      <button id="uploadBtn" disabled>Upload to Supabase</button>
+    </div>
+
+    <model-viewer
+      id="modelViewer"
+      src=""
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      camera-controls
+      touch-action="pan-y"
+      shadow-intensity="2"
+      min-camera-orbit="auto 90deg 4m"
+      max-camera-orbit="auto auto infinity"
+      field-of-view="45deg"
+      max-field-of-view="80deg"
+      auto-rotate="false"
+      camera-orbit="90deg 75deg 3m"
+    >
+      <button slot="ar-button" id="arButton">View in AR</button>
+      <p>3D model preview</p>
+    </model-viewer>
+
+    <div id="fileList">
+      <h2>Uploaded Files</h2>
+      <div id="filesContainer">Loading files...</div>
+    </div>
+  </main>
+
+  <footer>&copy; 2024 Urban Planner. All rights reserved.</footer>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const SUPABASE_URL = 'https://cpmooylqgmiorjikndjj.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNwbW9veWxxZ21pb3JqaWtuZGpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc3NDI0MjUsImV4cCI6MjA2MzMxODQyNX0.7bnLgfpK3z0lbKH7sljtjcXm4bUwVg3wiT6WYEjHXqk';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const fileInput = document.getElementById('fileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const modelViewer = document.getElementById('modelViewer');
+    const filesContainer = document.getElementById('filesContainer');
+
+    let selectedFile = null;
+    let previewURL = null;
+
+  fileInput.addEventListener('change', () => {
+  if (previewURL) {
+    URL.revokeObjectURL(previewURL); // cleanup old URL
+  }
+  selectedFile = fileInput.files[0];
+  if (!selectedFile) {
+    uploadBtn.disabled = true;
+    modelViewer.src = '';
+    return;
+  }
+  previewURL = URL.createObjectURL(selectedFile);
+  modelViewer.src = previewURL;
+  uploadBtn.disabled = false;
+});
+
+
+uploadBtn.addEventListener('click', async () => {
+  if (!selectedFile) return;
+
+  uploadBtn.disabled = true;
+  uploadBtn.textContent = 'Uploading...';
+
+  try {
+    // Upload to Supabase Storage
+    const filePath = `models/${selectedFile.name}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('models')
+      .upload(filePath, selectedFile, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+
+    if (uploadError) {
+      alert('Upload failed: ' + uploadError.message);
+      uploadBtn.disabled = false;
+      uploadBtn.textContent = 'Upload to Supabase';
+      return;
+    }
+
+    alert('Upload successful!');
+
+    // Refresh the file list
+    await fetchAndDisplayFiles();
+
+    uploadBtn.textContent = 'Upload to Supabase';
+    uploadBtn.disabled = true;
+    fileInput.value = '';
+    modelViewer.src = '';
+    selectedFile = null;
+    if (previewURL) {
+      URL.revokeObjectURL(previewURL);
+      previewURL = null;
+    }
+
+  } catch (err) {
+    alert('Error uploading file: ' + err.message);
+    uploadBtn.disabled = false;
+    uploadBtn.textContent = 'Upload to Supabase';
+  }
+});
+
+async function fetchAndDisplayFiles() {
+  filesContainer.innerHTML = 'Loading files...';
+
+  const { data, error } = await supabase.storage.from('models').list('models');
+
+  if (error) {
+    filesContainer.innerHTML = `<p>Error loading files: ${error.message}</p>`;
+    return;
+  }
+
+  if (data.length === 0) {
+    filesContainer.innerHTML = '<p>No files uploaded yet.</p>';
+    return;
+  }
+
+  // Clear container
+  filesContainer.innerHTML = '';
+
+  data.forEach(file => {
+    const btn = document.createElement('button');
+    btn.textContent = file.name;
+    btn.addEventListener('click', async () => {
+      // Get public URL for the file
+      const { data: publicURL } = supabase.storage.from('models').getPublicUrl(`models/${file.name}`);
+      if (publicURL.publicUrl) {
+        modelViewer.src = publicURL.publicUrl;
+      } else {
+        alert('Failed to get public URL');
+      }
+    });
+    filesContainer.appendChild(btn);
+  });
+}
+
+// Initial load
+fetchAndDisplayFiles();
+
+</script>
+  <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<df-messenger
+  intent="WELCOME"
+  chat-title="Jargo"
+  agent-id="2a2227e5-210f-4a84-b9b3-b8af751fcab4"
+  language-code="en"
+></df-messenger>
+ </body> 
+ </html>
